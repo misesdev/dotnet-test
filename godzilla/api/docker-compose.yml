@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=pass@WdHash500
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    network_mode: host
+    # networks:
+    #   - appnetwork
+
+  # webapp:
+  #   build: .
+  #   container_name: seu_app
+  #   depends_on:
+  #     - sqlserver
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #   ports:
+  #     - "8080:80"
+  #   networks:
+  #     - appnetwork
+
+# networks:
+#   appnetwork:
+#     driver: bridge

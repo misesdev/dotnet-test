@@ -1,0 +1,64 @@
+
+## Ignore arquivos de build
+bin/
+obj/
+
+## Ignore configurações de usuário
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Ignore pastas de publicação
+publish/
+out/
+
+## Ignore configurações do Visual Studio Code
+.vscode/
+
+## Ignore arquivos do Rider
+.idea/
+*.sln.iml
+
+## Ignore pacotes
+*.nupkg
+*.snupkg
+packages/
+# Para projetos que restauram pacotes em uma pasta customizada
+**/packages/*
+
+## Ignore arquivos de log
+*.log
+
+## Ignore arquivos temporários
+*.tmp
+*.temp
+
+## Ignore configurações de secrets
+secrets.json
+
+## Ignore arquivos gerados por dotnet user-secrets
+**/appsettings.Development.json
+**/appsettings.Local.json
+
+## Ignore dependências locais
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Sistema operacional - Windows
+Thumbs.db
+Desktop.ini
+
+## Arquivos do ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+## Arquivos de cache do DotCover
+*.dotCover
+
+## Arquivos de backup do VS
+*.bak
+
+## Ignorar certificados dev gerados pelo dotnet dev-certs
+dotnet-dev-certs.pfx
