@@ -2,7 +2,7 @@
 
 **Dado os requisitos na imagem abaixo, foi elaborado o fluxograma em seguida:**
 
-![Questão](/images/question.png)
+![Questão](images/question.png)
 
 
 ```
@@ -51,7 +51,7 @@ Foi implementado o sistema a partir do fluxograma oriundo dos requisitos da imag
 feito clone desse reporitório:
 
 ```bash
-    git clone meu.reporitório
+    git clone https://github.com/misesdev/a5-solutions.git
 ```
 
 Então basta navegar até a parta com a implementação, e executar com o dotnet CLI:
