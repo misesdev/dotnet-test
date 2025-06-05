@@ -42,7 +42,7 @@ public abstract class BaseService<Entity> where Entity : BaseModel
 
     public virtual async Task<Entity?> FindAsync(Expression<Func<Entity, bool>> find)  
     {
-        return await _dbSet.FindAsync(find);
+        return await _dbSet.Where(find).FirstOrDefaultAsync();
     }
 
     public virtual async Task<Entity?> GetByIdAsync(Guid id)

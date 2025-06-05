@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using api.Service;
 //using api.Models;
 
@@ -6,6 +7,7 @@ namespace api.Controllers;
 
 [ApiController]
 [Route("users")]
+[Authorize]
 public class UserController : ControllerBase 
 {
     private readonly UserService _service;
@@ -26,7 +28,7 @@ public class UserController : ControllerBase
     //     return Results.Ok(response);
     // }
    
-    [HttpPost("{id:guid}")]
+    [HttpGet("{id:guid}")]
     public async Task<IResult> Get(Guid id) 
     {
         var response = await _service.GetUser(id); 

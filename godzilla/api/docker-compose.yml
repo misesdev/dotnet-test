@@ -10,22 +10,21 @@ services:
       - MSSQL_PID=Express
     ports:
       - "1433:1433"
-    network_mode: host
-    # networks:
-    #   - appnetwork
+    networks:
+      - appnetwork
 
-  # webapp:
-  #   build: .
-  #   container_name: seu_app
-  #   depends_on:
-  #     - sqlserver
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #   ports:
-  #     - "8080:80"
-  #   networks:
-  #     - appnetwork
+  webapp:
+    build: .
+    container_name: godzilla_api
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8080:80"
+    networks:
+      - appnetwork
 
-# networks:
-#   appnetwork:
-#     driver: bridge
+networks:
+  appnetwork:
+    driver: bridge

@@ -19,7 +19,7 @@ public class AuthController : ControllerBase
     {
         var response = await _service.SignUp(user);
 
-        if(response.Success) 
+        if(!response.Success) 
             return Results.BadRequest(new { message = response.Message });
 
         return Results.Ok(response);
