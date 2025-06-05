@@ -1,5 +1,96 @@
 # Godzilla API
 
+## Teste #1
+
+**Você deve disponibilizar um endpoint "/godzilla". Esse serviço permite o aluguel de um filme 
+somente se a locadora possuir este filme em estoque. Caso o aluguel do filme escolhido seja 
+permitido, você deve retornar HTTP 200-OK, caso contrário um HTTP 403-FORBIDDEN:**
+
+Para atender esse caso eu foi implementado um endpoint que recebe o id do filme, como implementei
+tudo em inglês, então ficou `/movies/rent/{id}` que retornara a resposta como desejado, caso tenha
+em estoque para alugar, retorna `HTTP 200 OK` e caso não esteja `HTTP $)# FORBIDDEN`.
+
+
+## Teste #2
+
+**Disponibilizar um endpoint “localdora/godzilla” um HTTP GET que nos retorne os dados referente ao
+filme especificado. A pesquisa deve retornar o filme que contenham o parâmetro informado no título, 
+não é necessário informar o título inteiro do filme, assim sendo, pode retornar mais de um filme:**
+
+Para atender esse caso, novamente, como implementei em inglês a aplicação, criei 3 endpoints:
+
+- `/movies/new`
+    Permite adicionar filmes ao banco de dados para que possam ser utilizados os outros endpois.
+- `/movies/movie/{id}`
+    Retorna os dados do filme ao qual id se refere.
+- `/movies/search`
+    Retorna uma lista paginada com os filmes aos quais o título contem o termo pesquisado. 
+    recebe como parâmetro o json:
+    ```json
+        {
+            searchTerm: string,
+            page: number,
+            itemsPerPage: number
+        }
+    ```
+
+    Retorna um json com a estrutura:
+
+    ```json
+        {
+            page: number,
+            itemsPerPage: number,
+            items: [{}...]
+        }
+    ```
+
+## Test #3
+
+**Disponibilize um serviço extra de usuários, no qual permita incluir um novo cliente “usuários/usuário ” 
+que responde um HTTP POST e ao realizar a autenticação do usuário, deve retornar um o Token para 
+ser utilizado nas próximas requisições:**
+
+Para atender o caso acima a authenticação foi implementada com Jwt(Json Web Token), foram criados
+2 endpoints simples:
+
+- `/auth/signup`
+    Permite o cadastro de um usuário, recebendo como parâmetro o json: 
+    ```json
+        {
+          "name": "string",
+          "email": "user@example.com",
+          "password": "string"
+        }
+    ```
+- `/auth/sign`
+    Permite o login de um usuário retornando um token ao qual será utilizado para authenticar o 
+    usuário para o restante dos endpoints.
+    Recebe como parametro o json:
+    ```json
+        {
+          "email": "user@example.com",
+          "password": "string"
+        }
+    ```
+    Retorna o json:
+    ```json
+        {
+            {
+                "auth": true,
+                "user": {
+                    "name": "string",
+                    "email": "user@example.com",
+                    "id": "120e15b1-f80d-44ee-b368-3e8be0a5616c",
+                    "createdAt": "2025-06-05T10:27:47.6244214",
+                    "updatedAt": null,
+                    "deletedAt": null
+                },
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEyMGUxNWIxLWY4MGQtNDRlZS1iMzY4LTNlOGJlMGE1NjE2YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InVzZXJAZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoic3RyaW5nIiwiZXhwIjoxNzQ5MTIyOTA0LCJpc3MiOiJHb2R6aWxsYUFwaSIsImF1ZCI6IkdvZHppbGxhVXNlcnMifQ.3no5ErBXccDLvG3uRdSD9sQYWaUlK4Nc86psA8dcSJs"
+            }
+        }
+    ```
+
+
 ### Como executar com docker?
 
 Uma vez feito clone desse repositório:
@@ -28,7 +119,7 @@ com docker compose:
     docker compose up --build -d
 ```
 
-Uma vez executando dentro do container, a aplicação já estará disponível em `http://localhost:8080`, 
+Uma vez executando dentro do container, a aplicação já estará disponível em `http://localhost:8080/swagger`, 
 porém, ainda falta executar as migrations para funcionar corretamente. Altere a conectionString no arquivo `appsettings.Development`,
 apenas o host deve ser alterado para localhost:
 

@@ -48,4 +48,15 @@ public class MovieController : ControllerBase
 
         return Results.Ok(response.Data);
     }
+
+    [HttpPost("rent/{id:guid}")]
+    public async Task<IResult> Rent(Guid id) 
+    {
+        var response = await _service.RentMovie(id);
+
+        if(!response.Success)
+            return Results.Forbid();
+
+        return Results.Ok(response.Data);
+    }
 }

@@ -55,5 +55,17 @@ public class MovieService : BaseService<Movie>
         return Response<Result<Movie>>.Ok("", results);
     }
 
+    public async Task<Response<Movie>> RentMovie(Guid id)
+    {
+        var movie = await base.GetByIdAsync(id);
+
+        if(movie == null)
+            return Response<Movie>.Fail("Filme não encontrado!");
+
+        if(movie.Stock <= 0)
+            return Response<Movie>.Fail("Filme indisponível em estoque!");
+
+        return Response<Movie>.Ok("", movie);
+    }
 }
 
