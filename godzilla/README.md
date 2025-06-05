@@ -195,3 +195,17 @@ E então executar uma instância de desenvolvimento:
 ```bash
     dotnet run
 ```
+
+## Executar os testes
+
+```bash 
+    cd a5-solutions/godzilla/tests/ && dotnet test
+```
+
+
+`Obs`
+
+O projeto foi feito em um ubuntu utilizando `Lunar Vim` sem uma IDE, então possívelmente o projeto
+não vai abrir certinho com o projeto de tests etc em uma IDE como Visual Studio, não tem 
+arquivos de solutions(*.sln), por isso foi utilizando docker para poder facilitar a execução em 
+Windows sem muitos problemas.
