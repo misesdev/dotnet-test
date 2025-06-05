@@ -36,7 +36,7 @@ public class PasswordService {
         return (
             password.Length <= 6 ||
             !password.Any(char.IsDigit) || // not contains numbers
-            !password.Any(char.IsSymbol)   // not contains simbols 
+            !password.Any(c => !char.IsLetterOrDigit(c))   // not contains simbols 
         );
     }
 }

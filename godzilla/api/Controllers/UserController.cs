@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using api.Service;
-//using api.Models;
 
 namespace api.Controllers;
 
@@ -17,18 +16,7 @@ public class UserController : ControllerBase
         this._service = service;
     }
 
-    // [HttpPost("user")]
-    // public async Task<IResult> Register(RecordUser user)
-    // {
-    //     var response = await _service.Register(user);
-
-    //     if(response.Success) 
-    //         return Results.BadRequest(new { message = response.Message });
-
-    //     return Results.Ok(response);
-    // }
-   
-    [HttpGet("{id:guid}")]
+    [HttpGet("user/{id:guid}")]
     public async Task<IResult> Get(Guid id) 
     {
         var response = await _service.GetUser(id); 

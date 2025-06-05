@@ -2,7 +2,7 @@
 
 ## Teste #1
 
-**Você deve disponibilizar um endpoint "/godzilla". Esse serviço permite o aluguel de um filme 
+**1 - Você deve disponibilizar um endpoint "/godzilla". Esse serviço permite o aluguel de um filme 
 somente se a locadora possuir este filme em estoque. Caso o aluguel do filme escolhido seja 
 permitido, você deve retornar HTTP 200-OK, caso contrário um HTTP 403-FORBIDDEN:**
 
@@ -13,7 +13,7 @@ em estoque para alugar, retorna `HTTP 200 OK` e caso não esteja `HTTP $)# FORBI
 
 ## Teste #2
 
-**Disponibilizar um endpoint “localdora/godzilla” um HTTP GET que nos retorne os dados referente ao
+**2 - Disponibilizar um endpoint “localdora/godzilla” um HTTP GET que nos retorne os dados referente ao
 filme especificado. A pesquisa deve retornar o filme que contenham o parâmetro informado no título, 
 não é necessário informar o título inteiro do filme, assim sendo, pode retornar mais de um filme:**
 
@@ -46,7 +46,7 @@ Para atender esse caso, novamente, como implementei em inglês a aplicação, cr
 
 ## Test #3
 
-**Disponibilize um serviço extra de usuários, no qual permita incluir um novo cliente “usuários/usuário ” 
+**3 - Disponibilize um serviço extra de usuários, no qual permita incluir um novo cliente “usuários/usuário ” 
 que responde um HTTP POST e ao realizar a autenticação do usuário, deve retornar um o Token para 
 ser utilizado nas próximas requisições:**
 
