@@ -10,13 +10,6 @@ public class MovieService : BaseService<Movie>
 
     public async Task<Response<Movie>> AddAsync(RecordMovie model) 
     {
-        // if(string.IsNullOrEmpty(model.Title))
-        //     return Response<Movie>.Fail("O título é obrigatório!");
-        // if(model.Stock <= 0)
-        //     return Response<Movie>.Fail("A quantiade em estóque é obrigatória!");
-        // if(string.IsNullOrEmpty(model.Director))
-        //     return Response<Movie>.Fail("O Diretor é obrigatório!");
-
         var movie = await base.AddAsync(new Movie {
             Title = model.Title,
             Director = model.Director,
@@ -40,16 +33,21 @@ public class MovieService : BaseService<Movie>
 
     public async Task<Response<Result<Movie>>> SearchByTitle(MovieSearch model) 
     {
-        var lista = await base.FilterAsync(
-            m => m.Title.Contains(model.SearchTerm), 
-            model.Page, 
-            model.ItemsPerPage
-        );
+        var lista = await base.FilterAsync(m => m.Title.Contains(model.SearchTerm));
+
+        var items = lista?.Skip((model.Page - 1) * model.ItemsPerPage)
+            .Take(model.ItemsPerPage)
+            .ToList();
+
+        var pages = (lista?.Count > model.ItemsPerPage) ?
+               (int) Math.Ceiling((float)lista.Count / model.ItemsPerPage) : 1;
 
         var results = new Result<Movie> {
             Page = model.Page,
             ItemsPerPage = model.ItemsPerPage,
-            Items = lista ?? new List<Movie>()
+            Items = items ?? new List<Movie>(),
+            TotalItems = lista?.Count ?? 0,
+            TotalPages = pages
         };
 
         return Response<Result<Movie>>.Ok("", results);

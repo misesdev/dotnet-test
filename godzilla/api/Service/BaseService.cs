@@ -62,17 +62,9 @@ public abstract class BaseService<Entity> where Entity : BaseModel
         }
     }
 
-    protected virtual async Task<List<Entity>> FilterAsync(Expression<Func<Entity, bool>> filter, int itemsPerPage = 10, int page = 1, bool paginate = false) 
+    protected virtual async Task<List<Entity>> FilterAsync(Expression<Func<Entity, bool>> filter) 
     {
-        if(!paginate) {
-            return await _dbSet.Where(filter)
-                .ToListAsync();
-        }
-
-        return await _dbSet.Where(filter)
-            .Skip((page - 1) * itemsPerPage)
-            .Take(itemsPerPage)
-            .ToListAsync();
+        return await _dbSet.Where(filter).ToListAsync();
     }
 
     protected virtual async Task<bool> Exists(Expression<Func<Entity, bool>> find) 
