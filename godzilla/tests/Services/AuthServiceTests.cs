@@ -1,164 +1,165 @@
-using Moq;
-using System.Linq.Expressions;
-using api.Models;
-using api.Service;
-using api.Data;
-using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
+using api.Data;
+using api.Service;
+using api.Models;
+using api.Models.Common;
+using api.Extentios;
+using System.Linq;
 
-namespace api.Tests.Service;
-
-[TestClass]
-public class AuthServiceTests
+namespace api.Tests.Services
 {
-    private readonly AppDbContex _dbContext;
-    private readonly Mock<PasswordService> _passwordMock;
-    private readonly Mock<TokenService> _tokenMock;
-    private readonly AuthService _authService;
-
-    public AuthServiceTests()
+    [TestClass]
+    public class AuthServiceTests
     {
-        var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
+        private AppDbContex GetInMemoryContext(string dbName)
+        {
+            var options = new DbContextOptionsBuilder<AppDbContex>()
+                .UseInMemoryDatabase(databaseName: dbName)
+                .Options;
 
-        _dbContext = new AppDbContext(options);
-        _passwordMock = new Mock<PasswordService>();
-        _tokenMock = new Mock<TokenService>();
+            return new AppDbContex(options);
+        }
 
-        _authService = new AuthService(_dbContext, _passwordMock.Object, _tokenMock.Object);
-    }
+        private RecordUser GetSampleUser() => new RecordUser
+        {
+            Name = "Alice",
+            Email = "alice@example.com",
+            Password = "StrongPassword123"
+        };
 
-    [TestMethod]
-    public async Task SignUp_ShouldFail_WhenEmailExists()
-    {
-        // Arrange
-        var model = new RecordUser { Email = "test@example.com", Password = "abc123", Name = "Test" };
+        private SignUser GetSampleSignIn() => new SignUser
+        {
+            Email = "alice@example.com",
+            Password = "StrongPassword123"
+        };
 
-        var service = new TestableAuthService(_dbContext, _passwordMock.Object, _tokenMock.Object);
-        service.SetExistsResult(true);
+        [TestMethod]
+        public async Task SignUp_ShouldSucceed_WhenValidInput()
+        {
+            var context = GetInMemoryContext("SignUp_Success");
 
-        // Act
-        var result = await service.SignUp(model);
+            var passwordMock = new Mock<PasswordService>();
+            passwordMock.Setup(p => p.WeakPassword(It.IsAny<string>())).Returns(false);
+            passwordMock.Setup(p => p.GenerateSalt()).Returns("salt");
+            passwordMock.Setup(p => p.HashPassword(It.IsAny<string>(), It.IsAny<string>())).Returns("hashed");
 
-        // Assert
-        result.Success.Should().BeFalse();
-        result.Message.Should().Contain("E-mail já existente");
-    }
+            var tokenMock = new Mock<TokenService>();
 
-    [TestMethod]
-    public async Task SignUp_ShouldFail_WhenPasswordIsWeak()
-    {
-        // Arrange
-        var model = new RecordUser { Email = "test@example.com", Password = "123", Name = "Weak" };
+            var service = new AuthService(context, passwordMock.Object, tokenMock.Object);
+            var result = await service.SignUp(GetSampleUser());
 
-        var service = new TestableAuthService(_dbContext, _passwordMock.Object, _tokenMock.Object);
-        service.SetExistsResult(false);
-        _passwordMock.Setup(p => p.WeakPassword(model.Password)).Returns(true);
+            Assert.IsTrue(result.Success);
+            Assert.AreEqual("Usuario cadastrado com sucesso!", result.Message);
+            Assert.AreEqual("alice@example.com", result.Data.Email);
+        }
 
-        // Act
-        var result = await service.SignUp(model);
+        [TestMethod]
+        public async Task SignUp_ShouldFail_WhenEmailExists()
+        {
+            var context = GetInMemoryContext("SignUp_EmailExists");
+            context.Users.Add(new User { Id = Guid.NewGuid(), Email = "alice@example.com", Name = "Test" });
+            await context.SaveChangesAsync();
 
-        // Assert
-        result.Success.Should().BeFalse();
-        result.Message.Should().Contain("fraca");
-    }
+            var passwordMock = new Mock<PasswordService>();
+            var tokenMock = new Mock<TokenService>();
 
-    [TestMethod]
-    public async Task SignUp_ShouldSucceed_WhenValidData()
-    {
-        // Arrange
-        var model = new RecordUser { Email = "test@example.com", Password = "abc123", Name = "Valid" };
+            var service = new AuthService(context, passwordMock.Object, tokenMock.Object);
+            var result = await service.SignUp(GetSampleUser());
 
-        var service = new TestableAuthService(_dbContext, _passwordMock.Object, _tokenMock.Object);
-        service.SetExistsResult(false);
+            Assert.IsFalse(result.Success);
+            Assert.AreEqual("E-mail já existente! (Jamais seria exibido em cenário real)!", result.Message);
+        }
 
-        _passwordMock.Setup(p => p.WeakPassword(model.Password)).Returns(false);
-        _passwordMock.Setup(p => p.GenerateSalt()).Returns("SALT");
-        _passwordMock.Setup(p => p.HashPassword(model.Password, "SALT")).Returns("HASH");
+        [TestMethod]
+        public async Task SignUp_ShouldFail_WhenPasswordIsWeak()
+        {
+            var context = GetInMemoryContext("SignUp_WeakPassword");
 
-        // Act
-        var result = await service.SignUp(model);
+            var passwordMock = new Mock<PasswordService>();
+            passwordMock.Setup(p => p.WeakPassword(It.IsAny<string>())).Returns(true);
 
-        // Assert
-        result.Success.Should().BeTrue();
-        result.Data?.Email.Should().Be(model.Email);
-    }
+            var tokenMock = new Mock<TokenService>();
 
-    [TestMethod]
-    public async Task Sigin_ShouldFail_WhenUserNotFound()
-    {
-        // Arrange
-        var model = new SignUser { Email = "notfound@example.com", Password = "pass" };
+            var service = new AuthService(context, passwordMock.Object, tokenMock.Object);
+            var result = await service.SignUp(GetSampleUser());
 
-        var service = new TestableAuthService(_dbContext, _passwordMock.Object, _tokenMock.Object);
-        service.SetFindUser(null);
+            Assert.IsFalse(result.Success);
+            Assert.AreEqual("Senha muito fraca!", result.Message);
+        }
 
-        // Act
-        var result = await service.Sigin(model);
+        [TestMethod]
+        public async Task Sigin_ShouldSucceed_WithCorrectCredentials()
+        {
+            var context = GetInMemoryContext("Sigin_Success");
 
-        // Assert
-        result.Success.Should().BeFalse();
-    }
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                Email = "alice@example.com",
+                Name = "Alice",
+                Salt = "salt",
+                PasswordHash = "hashed"
+            };
+            context.Users.Add(user);
+            await context.SaveChangesAsync();
 
-    [TestMethod]
-    public async Task Sigin_ShouldFail_WhenPasswordIsInvalid()
-    {
-        // Arrange
-        var model = new SignUser { Email = "user@example.com", Password = "wrong" };
-        var user = new User { Email = model.Email, PasswordHash = "HASH", Salt = "SALT" };
+            var passwordMock = new Mock<PasswordService>();
+            passwordMock.Setup(p => p.VerifyPassword("StrongPassword123", "hashed", "salt")).Returns(true);
 
-        var service = new TestableAuthService(_dbContext, _passwordMock.Object, _tokenMock.Object);
-        service.SetFindUser(user);
+            var tokenMock = new Mock<TokenService>();
+            tokenMock.Setup(t => t.GenerateToken(It.IsAny<User>())).Returns("mocked_token");
 
-        _passwordMock.Setup(p => p.VerifyPassword(model.Password, user.PasswordHash, user.Salt)).Returns(false);
+            var service = new AuthService(context, passwordMock.Object, tokenMock.Object);
+            var result = await service.Sigin(GetSampleSignIn());
 
-        // Act
-        var result = await service.Sigin(model);
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Data.Auth);
+            Assert.AreEqual("mocked_token", result.Data.Token);
+            Assert.AreEqual("alice@example.com", result.Data.User.Email);
+        }
 
-        // Assert
-        result.Success.Should().BeFalse();
-    }
+        [TestMethod]
+        public async Task Sigin_ShouldFail_WhenUserNotFound()
+        {
+            var context = GetInMemoryContext("Sigin_UserNotFound");
 
-    [TestMethod]
-    public async Task Sigin_ShouldSucceed_WhenCredentialsAreCorrect()
-    {
-        // Arrange
-        var model = new SignUser { Email = "user@example.com", Password = "correct" };
-        var user = new User { Email = model.Email, PasswordHash = "HASH", Salt = "SALT", Name = "User", Id = Guid.NewGuid() };
+            var passwordMock = new Mock<PasswordService>();
+            var tokenMock = new Mock<TokenService>();
 
-        var service = new TestableAuthService(_dbContext, _passwordMock.Object, _tokenMock.Object);
-        service.SetFindUser(user);
+            var service = new AuthService(context, passwordMock.Object, tokenMock.Object);
+            var result = await service.Sigin(GetSampleSignIn());
 
-        _passwordMock.Setup(p => p.VerifyPassword(model.Password, user.PasswordHash, user.Salt)).Returns(true);
-        _tokenMock.Setup(t => t.GenerateToken(user)).Returns("TOKEN123");
+            Assert.IsFalse(result.Success);
+            Assert.AreEqual("E-mail ou senha inválidos!", result.Message);
+        }
 
-        // Act
-        var result = await service.Sigin(model);
+        [TestMethod]
+        public async Task Sigin_ShouldFail_WhenPasswordIncorrect()
+        {
+            var context = GetInMemoryContext("Sigin_WrongPassword");
 
-        // Assert
-        result.Success.Should().BeTrue();
-        result.Data.Token.Should().Be("TOKEN123");
-    }
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                Email = "alice@example.com",
+                Name = "Alice",
+                Salt = "salt",
+                PasswordHash = "hashed"
+            };
+            context.Users.Add(user);
+            await context.SaveChangesAsync();
 
-    // Classe auxiliar para mockar métodos protegidos de BaseService
-    private class TestableAuthService : AuthService
-    {
-        private bool _existsResult = false;
-        private User _foundUser;
+            var passwordMock = new Mock<PasswordService>();
+            passwordMock.Setup(p => p.VerifyPassword("StrongPassword123", "hashed", "salt")).Returns(false);
 
-        public TestableAuthService(AppDbContex context, PasswordService password, TokenService token)
-            : base(context, password, token) { }
+            var tokenMock = new Mock<TokenService>();
 
-        public void SetExistsResult(bool exists) => _existsResult = exists;
+            var service = new AuthService(context, passwordMock.Object, tokenMock.Object);
+            var result = await service.Sigin(GetSampleSignIn());
 
-        public void SetFindUser(User user) => _foundUser = user;
-
-        protected override Task<bool> Exists(Expression<Func<User, bool>> predicate)
-            => Task.FromResult(_existsResult);
-
-        protected override Task<User?> FindAsync(Expression<Func<User, bool>> predicate)
-            => Task.FromResult(_foundUser);
+            Assert.IsFalse(result.Success);
+            Assert.AreEqual("E-mail ou senha inválidos!", result.Message);
+        }
     }
 }
-
