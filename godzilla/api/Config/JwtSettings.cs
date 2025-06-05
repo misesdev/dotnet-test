@@ -1,5 +1,5 @@
 
-namespace api.Models;
+namespace api.Config;
 
 public class JwtSettings
 {

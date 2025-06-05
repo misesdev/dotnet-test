@@ -1,5 +1,5 @@
 
-namespace api.Models;
+namespace api.Models.Common;
 
 public class Response<Entity> {
     public bool Success { get; set; } = true;

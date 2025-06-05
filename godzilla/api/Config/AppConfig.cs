@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using api.Service;
-using api.Models;
 
 namespace api.Config;
 
@@ -14,6 +13,7 @@ public static class AppConfig
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<PasswordService>();
         builder.Services.AddScoped<TokenService>();
+        builder.Services.AddScoped<MovieService>();
 
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
         var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();

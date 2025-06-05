@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -14,14 +12,19 @@ services:
       - appnetwork
 
   webapp:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile
     container_name: godzilla_api
     depends_on:
       - sqlserver
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "8080:80"
+      - "8080:8080"
+    command: >
+      sh -c "dotnet ef database update --project api/api.csproj --startup-project api &&
+         dotnet api.dll"
     networks:
       - appnetwork
 

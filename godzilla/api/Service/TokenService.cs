@@ -1,9 +1,10 @@
-using api.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
+using api.Models;
+using api.Config;
 
 namespace api.Service;
 

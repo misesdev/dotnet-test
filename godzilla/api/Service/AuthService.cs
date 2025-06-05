@@ -1,5 +1,6 @@
 using api.Data;
 using api.Models;
+using api.Models.Common;
 using api.Extentios;
 
 namespace api.Service;
@@ -36,7 +37,6 @@ public class AuthService : BaseService<User>
 
         return Response<UserDTO>.Ok("Usuario cadastrado com sucesso!", entity.ToDto());
     }
-
 
     public async Task<Response<UserAuth>> Sigin(SignUser model) 
     {
