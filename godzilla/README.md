@@ -21,15 +21,15 @@ Primeiro instale os pacotes:
 ```
 
 O projeto está configurado para executar com docker compose, porém existe um detalhe, o banco de 
-dados acaba não conectando, para garantir que não haja problemas, primeiro execute a aplicação
+dados acaba não conectando, para garantir que não hajam problemas, primeiro execute a aplicação
 com docker compose:
 
 ```bash
     docker compose up --build -d
 ```
 
-Uma vez executando dentro do container, você deve is nas pastas do repositório baixado para executar as 
-migrations, ainda me `/a5-solutions/godzilla/api`, altere a conectionString no arquivo `appsettings.Development`,
+Uma vez executando dentro do container, a aplicação já estará disponível em `http://localhost:8080`, 
+porém, ainda falta executar as migrations para funcionar corretamente. Altere a conectionString no arquivo `appsettings.Development`,
 apenas o host deve ser alterado para localhost:
 
 ```json 
@@ -46,7 +46,7 @@ apenas o host deve ser alterado para localhost:
     }
 ```
 
-Agora basta executar as migrations e a aplicação deve funcionar bem:
+Agora basta executar as migrations e a aplicação deve funcionar como o esperado:
 
 ```bash
     dotnet ef database update 
@@ -68,8 +68,9 @@ Se você estiver em linux basta deletar tudo que está em `docker-compose.yml` e
     network_mode: host
 ```
 
-Então executando com docker compose irá executar apenas o banco de dados em um container e 
-você poderá apenas alterar o host na connectionString e executar normalmente:
+Então executando com docker compose irá executar apenas o banco de dados em um container que ficará 
+disponível em `http://localhost:1433`, então altere apenas o host na connectionString e então 
+você pode executar a apliação normalmente:
 
 ```json 
     {
@@ -91,7 +92,7 @@ você poderá apenas alterar o host na connectionString e executar normalmente:
 
 ### Como executar sem docker no Windows
 
-Para executar a aplicação do Windows, basta mudar a connectionString para apontar para seu banco de dados
+Para executar a aplicação no Windows, basta mudar a connectionString para apontar para seu banco de dados
 rodando localmente, executar as migrations:
 
 ```bash
