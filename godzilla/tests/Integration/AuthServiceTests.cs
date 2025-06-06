@@ -48,11 +48,11 @@ public class AuthServiceTests
             Password = "StrongPassword123!"
         };
 
-        var response = await _authService.SignUp(model);
+        var result = await _authService.SignUp(model);
 
-        Assert.IsTrue(response.Success);
-        Assert.IsNotNull(response.Data);
-        Assert.AreEqual("alice@test.com", response.Data.Email);
+        Assert.IsTrue(result.Success);
+        Assert.IsNotNull(result.Data);
+        Assert.AreEqual("alice@test.com", result.Data.Email);
     }
 
     [TestMethod]
@@ -66,11 +66,11 @@ public class AuthServiceTests
             Password = "StrongPassword123!"
         };
 
-        var response = await _authService.SignUp(model);
-        Console.WriteLine(response.Message);
+        var result = await _authService.SignUp(model);
+        Console.WriteLine(result.Message);
 
-        Assert.IsFalse(response.Success);
-        Assert.AreEqual("E-mail já existente! (Jamais seria exibido em cenário real)!", response.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("E-mail já existente! (Jamais seria exibido em cenário real)!", result.Message);
     }
 
     [TestMethod]
@@ -84,10 +84,10 @@ public class AuthServiceTests
             Password = "123" // senha fraca
         };
 
-        var response = await _authService.SignUp(model);
+        var result = await _authService.SignUp(model);
 
-        Assert.IsFalse(response.Success);
-        Assert.AreEqual("Senha muito fraca!", response.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Senha muito fraca!", result.Message);
     }
 
     [TestMethod]
@@ -100,12 +100,12 @@ public class AuthServiceTests
             Password = "StrongPassword123!"
         };
 
-        var response = await _authService.Sigin(model);
+        var result = await _authService.Sigin(model);
 
-        Assert.IsTrue(response.Success);
-        Assert.IsNotNull(response.Data);
-        Assert.IsTrue(response.Data.Auth);
-        Assert.IsFalse(string.IsNullOrWhiteSpace(response.Data.Token));
+        Assert.IsTrue(result.Success);
+        Assert.IsNotNull(result.Data);
+        Assert.IsTrue(result.Data.Auth);
+        Assert.IsFalse(string.IsNullOrWhiteSpace(result.Data.Token));
     }
 
     [TestMethod]
@@ -118,10 +118,10 @@ public class AuthServiceTests
             Password = "WrongPassword"
         };
 
-        var response = await _authService.Sigin(model);
+        var result = await _authService.Sigin(model);
 
-        Assert.IsFalse(response.Success);
-        Assert.AreEqual("E-mail ou senha inválidos!", response.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("E-mail ou senha inválidos!", result.Message);
     }
 
     [TestMethod]
@@ -134,9 +134,9 @@ public class AuthServiceTests
             Password = "AnyPassword"
         };
 
-        var response = await _authService.Sigin(model);
+        var result = await _authService.Sigin(model);
 
-        Assert.IsFalse(response.Success);
-        Assert.AreEqual("E-mail ou senha inválidos!", response.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("E-mail ou senha inválidos!", result.Message);
     }
 }

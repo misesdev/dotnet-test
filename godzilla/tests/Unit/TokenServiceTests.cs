@@ -7,9 +7,10 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace api.Tests.Service;
+namespace api.Tests.Unit;
 
 [TestClass]
+[TestCategory("Unit")]
 public class TokenServiceTests
 {
     private TokenService? _service;

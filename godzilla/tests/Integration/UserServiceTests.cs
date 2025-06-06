@@ -40,20 +40,20 @@ public class UserServiceTests
     [TestMethod]
     public async Task GetUser_ShouldReturnUser_WhenIdExists()
     {
-        var response = await _userService.GetUser(_testUser.Id);
+        var result = await _userService.GetUser(_testUser.Id);
 
-        Assert.IsTrue(response.Success);
-        Assert.IsNotNull(response.Data);
-        Assert.AreEqual(_testUser.Id, response.Data!.Id);
+        Assert.IsTrue(result.Success);
+        Assert.IsNotNull(result.Data);
+        Assert.AreEqual(_testUser.Id, result.Data!.Id);
     }
 
     [TestMethod]
     public async Task GetUser_ShouldReturnFail_WhenIdDoesNotExist()
     {
-        var response = await _userService.GetUser(Guid.NewGuid());
+        var result = await _userService.GetUser(Guid.NewGuid());
 
-        Assert.IsFalse(response.Success);
-        Assert.AreEqual("Usuário não encontrado!", response.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Usuário não encontrado!", result.Message);
     }
 
     [TestMethod]
@@ -66,12 +66,12 @@ public class UserServiceTests
             Email = "mises@dev.com"
         };
 
-        var response = await _userService.UpdateAsync(updatedDto);
+        var result = await _userService.UpdateAsync(updatedDto);
 
-        Assert.IsTrue(response.Success);
-        Assert.AreEqual("Usuário atualizado com sucesso!", response.Message);
-        Assert.AreEqual("Mises Dev", response.Data!.Name);
-        Assert.AreEqual("mises@dev.com", response.Data.Email);
+        Assert.IsTrue(result.Success);
+        Assert.AreEqual("Usuário atualizado com sucesso!", result.Message);
+        Assert.AreEqual("Mises Dev", result.Data!.Name);
+        Assert.AreEqual("mises@dev.com", result.Data.Email);
     }
 
     [TestMethod]
@@ -81,13 +81,13 @@ public class UserServiceTests
         {
             Id = Guid.NewGuid(),
             Name = "Ghost",
-            Email = "ghost@example.com"
+            Email = "ghost@dev.com"
         };
 
-        var response = await _userService.UpdateAsync(fakeDto);
+        var result = await _userService.UpdateAsync(fakeDto);
 
-        Assert.IsFalse(response.Success);
-        Assert.AreEqual("Usuário inexistente!", response.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Usuário inexistente!", result.Message);
     }
 }
 

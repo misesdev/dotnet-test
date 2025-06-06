@@ -7,6 +7,7 @@ using api.Tests.Integration.Faker;
 namespace api.Tests.Integration;
 
 [TestClass]
+[TestCategory("Integration")]
 public class MovieServiceTests 
 {
     private static AppDbContex _dbContext = null!;
@@ -89,11 +90,11 @@ public class MovieServiceTests
             ItemsPerPage = 10
         };
 
-        var response = await _movieService.SearchByTitle(model);
+        var result = await _movieService.SearchByTitle(model);
 
-        Assert.IsTrue(response.Success);
-        Assert.IsTrue(response.Data?.Items.Any(m => m.Id == _testMovie.Id));
-        Assert.IsTrue(response.Data!.TotalItems > 0);
+        Assert.IsTrue(result.Success);
+        Assert.IsTrue(result.Data?.Items.Any(m => m.Id == _testMovie.Id));
+        Assert.IsTrue(result.Data!.TotalItems > 0);
     }
 
     [TestMethod]
@@ -106,20 +107,20 @@ public class MovieServiceTests
             ItemsPerPage = 10
         };
 
-        var response = await _movieService.SearchByTitle(model);
+        var result = await _movieService.SearchByTitle(model);
 
-        Assert.IsTrue(response.Success);
-        Assert.AreEqual(0, response.Data!.TotalItems);
-        Assert.AreEqual(0, response.Data.Items.Count);
+        Assert.IsTrue(result.Success);
+        Assert.AreEqual(0, result.Data!.TotalItems);
+        Assert.AreEqual(0, result.Data.Items.Count);
     }
 
     [TestMethod]
     public async Task RentMovie_ShouldReturnMovie_WhenInStock()
     {
-        var response = await _movieService.RentMovie(_testMovie.Id);
+        var result = await _movieService.RentMovie(_testMovie.Id);
 
-        Assert.IsTrue(response.Success);
-        Assert.AreEqual(response.Data?.Id, _testMovie.Id);
+        Assert.IsTrue(result.Success);
+        Assert.AreEqual(result.Data?.Id, _testMovie.Id);
     }
 
     [TestMethod]
@@ -138,19 +139,19 @@ public class MovieServiceTests
         _dbContext.Movies.Add(outOfStock);
         await _dbContext.SaveChangesAsync();
 
-        var response = await _movieService.RentMovie(outOfStock.Id);
+        var result = await _movieService.RentMovie(outOfStock.Id);
 
-        Assert.IsFalse(response.Success);
-        Assert.AreEqual("Filme indisponível em estoque!", response.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Filme indisponível em estoque!", result.Message);
     }
 
     [TestMethod]
     public async Task RentMovie_ShouldFail_WhenMovieNotFound()
     {
-        var response = await _movieService.RentMovie(Guid.NewGuid());
+        var result = await _movieService.RentMovie(Guid.NewGuid());
 
-        Assert.IsFalse(response.Success);
-        Assert.AreEqual("Filme não encontrado!", response.Message);
+        Assert.IsFalse(result.Success);
+        Assert.AreEqual("Filme não encontrado!", result.Message);
     }     
 }
 

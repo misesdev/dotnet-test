@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using api.Models.Validations;
 
 namespace api.Models;
 
@@ -40,6 +41,6 @@ public class SignUser {
     [StringLength(50, MinimumLength = 5, ErrorMessage = "`email` deve ter entre 5 e 50 caracteres")]
     public string Email { get; set; } = string.Empty;
     [Required(ErrorMessage = "`password` é um campo obriogatório")]
-    [StringLength(50, MinimumLength = 6, ErrorMessage = "`password` deve conter entre 6 e 50 caracteres")]
+    [PasswordAttribute]
     public string Password { get; set; } = string.Empty;
 }
