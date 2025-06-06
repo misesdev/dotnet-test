@@ -18,7 +18,7 @@ public class MovieService : BaseService<Movie>
             Source = model.Source
         });
 
-        return Response<Movie>.Ok("", movie);
+        return Response<Movie>.Ok("Filme adicionado com sucesso!", movie);
     }
 
     public async Task<Response<Movie>> GetById(Guid id)

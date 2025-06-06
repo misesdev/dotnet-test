@@ -8,6 +8,7 @@ namespace api.Service;
 public class UserService : BaseService<User> 
 {
     private readonly PasswordService _password;
+    
     public UserService(AppDbContex context, PasswordService password) : base(context) {
         this._password = password;
     }
@@ -20,6 +21,22 @@ public class UserService : BaseService<User>
             return Response<UserDTO>.Fail("Usuário não encontrado!");
 
         return Response<UserDTO>.Ok("", user.ToDto());
+    }
+
+    public async Task<Response<UserDTO>> UpdateAsync(UserDTO model)
+    {
+        var user = await base.GetByIdAsync(model.Id);
+
+        if(user == null)
+            return Response<UserDTO>.Fail("Usuário inexistente!");
+
+        user.Name = model.Name;
+        user.Email = model.Email;
+        user.UpdatedAt = DateTime.Now;
+
+        await _dbContext.SaveChangesAsync();
+        
+        return Response<UserDTO>.Ok("Usuário atualizado com sucesso!", user.ToDto());
     }
 
 }

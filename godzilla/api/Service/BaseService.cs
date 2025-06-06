@@ -7,15 +7,15 @@ namespace api.Service;
 
 public abstract class BaseService<Entity> where Entity : BaseModel 
 {
-    private readonly AppDbContex _dbContext;
-    private readonly DbSet<Entity> _dbSet;
+    protected readonly AppDbContex _dbContext;
+    protected readonly DbSet<Entity> _dbSet;
 
     public BaseService(AppDbContex context) {
         this._dbContext = context;
         this._dbSet = context.Set<Entity>();
     }
 
-    protected virtual async Task<List<Entity>> GetAllAsync(int itemsPerPage = 10, int page = 1, bool paginate = false)
+    public virtual async Task<List<Entity>> GetAllAsync(int itemsPerPage = 10, int page = 1, bool paginate = false)
     {
         if(!paginate) {
             return await _dbSet
@@ -30,7 +30,17 @@ public abstract class BaseService<Entity> where Entity : BaseModel
             .ToListAsync();
     }
 
-    protected virtual async Task<Entity> AddAsync(Entity entity)
+    public virtual async Task<Entity?> FindAsync(Expression<Func<Entity, bool>> expression)  
+    {
+        return await _dbSet.Where(expression).FirstOrDefaultAsync();
+    }
+
+    public virtual async Task<Entity?> GetByIdAsync(Guid id)
+    {
+        return await _dbSet.FindAsync(id);
+    }
+
+    public virtual async Task<Entity> AddAsync(Entity entity)
     {
         entity.Id = Guid.NewGuid();
         entity.CreatedAt = DateTime.Now;
@@ -42,17 +52,7 @@ public abstract class BaseService<Entity> where Entity : BaseModel
         return entity;
     }
 
-    protected virtual async Task<Entity?> FindAsync(Expression<Func<Entity, bool>> find)  
-    {
-        return await _dbSet.Where(find).FirstOrDefaultAsync();
-    }
-
-    protected virtual async Task<Entity?> GetByIdAsync(Guid id)
-    {
-        return await _dbSet.FindAsync(id);
-    }
-
-    protected virtual async Task DeleteAsync(Guid id)
+    public virtual async Task DeleteAsync(Guid id)
     {
         var entity = await GetByIdAsync(id);
         if (entity != null)
@@ -62,13 +62,13 @@ public abstract class BaseService<Entity> where Entity : BaseModel
         }
     }
 
-    protected virtual async Task<List<Entity>> FilterAsync(Expression<Func<Entity, bool>> filter) 
+    public virtual async Task<List<Entity>> FilterAsync(Expression<Func<Entity, bool>> expression) 
     {
-        return await _dbSet.Where(filter).ToListAsync();
+        return await _dbSet.Where(expression).ToListAsync();
     }
 
-    protected virtual async Task<bool> Exists(Expression<Func<Entity, bool>> find) 
+    public virtual async Task<bool> Exists(Expression<Func<Entity, bool>> expression) 
     {
-        return await _dbSet.AnyAsync(find);
+        return await _dbSet.AnyAsync(expression);
     }
 }
