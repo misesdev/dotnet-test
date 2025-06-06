@@ -41,13 +41,20 @@ public class AuthControllerTests
     }
 
     [TestMethod]
-    public async Task SignUp_ShouldReturnBadRequest_WhenUserIsInvalid()
+    [DataRow("Mi", "mises@dev.com", "@3123Dfse$3")] // invalid name
+    [DataRow("Mises Dev", "mises@@dev.com", "@3123Dfse$3")] // invalid email
+    [DataRow("Mises Dev", "mises@dev.com", "123")] // invalid password name
+    public async Task SignUp_ShouldReturnBadRequest_WhenUserIsInvalid(
+        string name,
+        string email,
+        string password
+        )
     {
         var body = new
         {
-            name = "", // inválido
-            email = "email-invalido",
-            password = "123"
+            name = name,
+            email = email,
+            password = password
         };
 
         var response = await _client.PostAsJsonAsync("/auth/signup", body);
@@ -56,12 +63,19 @@ public class AuthControllerTests
     }
 
     [TestMethod]
-    public async Task Sign_ShouldReturnBadRequest_WhenCredentialIsInvalid()
+    [DataRow(null, "1234")] // invalid password
+    [DataRow(null, "23#$Der#234Wsdd")] // incorrect password 
+    [DataRow("mises@@frame..com", "23#$Der#234Wwed")] // invalid email
+    [DataRow("mises12345@euclides.eu", "23#$Der#234Wwed")] // invalid email (not exists) 
+    public async Task Sign_ShouldReturnBadRequest_WhenCredentialIsInvalid(
+        string email, 
+        string password
+        )
     {
         var login = new
         {
-            email = _recordUser.Email,
-            password = "23#$Der#234Wwed"
+            email = email ?? _recordUser.Email,
+            password = password
         };
 
         var response = await _client.PostAsJsonAsync("/auth/sign", login);

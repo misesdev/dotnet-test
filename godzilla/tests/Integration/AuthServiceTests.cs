@@ -74,23 +74,6 @@ public class AuthServiceTests
     }
 
     [TestMethod]
-    [Priority(3)]
-    public async Task Test03_ShouldFailSignUpForWeakPassword()
-    {
-        var model = new RecordUser
-        {
-            Name = "Weak Pass",
-            Email = "weakpass@test.com",
-            Password = "123" // senha fraca
-        };
-
-        var result = await _authService.SignUp(model);
-
-        Assert.IsFalse(result.Success);
-        Assert.AreEqual("Senha muito fraca!", result.Message);
-    }
-
-    [TestMethod]
     [Priority(4)]
     public async Task Test04_ShouldSignInWithCorrectCredentials()
     {
