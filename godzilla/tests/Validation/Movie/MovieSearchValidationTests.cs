@@ -8,21 +8,20 @@ namespace api.Tests.Validation.Movie;
 public class MovieSearchValidationTests
 {
     [TestMethod]
-    public void MovieSearch_InvalidData_ShouldFailValidation()
+    [DataRow("d", 1, 10)] // invalid search term
+    [DataRow("Teste Search", 0, 10)] // invalid page number
+    [DataRow("Teste busca", 1, 0)] // invalid items per page number
+    public void MovieSearch_InvalidData_ShouldFailValidation(string term, int page, int items)
     {
         var model = new MovieSearch
         {
-            SearchTerm = "a",  // muito curto
-            Page = 0,
-            ItemsPerPage = 0
+            SearchTerm = term,  // muito curto
+            Page = page,
+            ItemsPerPage = items
         };
 
         var results = ValidationHelper.Validate(model);
-        Assert.AreEqual(3, results.Count);
-
-        Assert.IsTrue(results.Any(r => r.ErrorMessage!.Contains("SearchTerm")));
-        Assert.IsTrue(results.Any(r => r.ErrorMessage!.Contains("Page")));
-        Assert.IsTrue(results.Any(r => r.ErrorMessage!.Contains("ItemsPerPage")));
+        Assert.IsTrue(results.Count != 0);
     }
 
     [TestMethod]

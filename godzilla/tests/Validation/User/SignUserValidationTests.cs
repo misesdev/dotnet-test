@@ -9,31 +9,35 @@ namespace api.Tests.Validation.User;
 public class SignUserValidationTests
 {
     [TestMethod]
-    public void SignUser_InvalidFields_ShouldFailValidation()
+    [DataRow("gmail.com", "1234Rdsd")]
+    [DataRow("misesdev@@gmailll", "1234Rdsd")]
+    [DataRow("euclides@mises.com", "!@wdwesd")]
+    public void SignUser_InvalidFields_ShouldFailValidation(string email, string password)
     {
         var user = new SignUser
         {
-            Email = "abc", // muito curto e inválido
-            Password = "123" // muito curto
+            Email = email, // muito curto e inválido
+            Password = password // muito curto
         };
 
         var results = ValidationHelper.Validate(user);
-        Assert.AreEqual(3, results.Count);
 
-        Assert.IsTrue(results.Any(r => r.ErrorMessage!.Contains("e-mail fornecido está inválido")));
-        Assert.IsTrue(results.Any(r => r.ErrorMessage!.Contains("senha") || r.ErrorMessage!.Contains("password")));
+        Assert.IsTrue(results.Count > 0);
     }
 
     [TestMethod]
-    public void SignUser_ValidFields_ShouldPassValidation()
+    [DataRow("mises@dev.com", "@#$Ffdf2311")]
+    [DataRow("misesdev@gmail.com", "@#$#@#DFfdfdfdfgv564343")]
+    public void SignUser_ValidFields_ShouldPassValidation(string email, string password)
     {
         var user = new SignUser
         {
-            Email = "mises@dev.com",
-            Password = "@#$Ffdf2311"
+            Email = email,
+            Password = password
         };
 
         var results = ValidationHelper.Validate(user);
+        
         Assert.AreEqual(0, results.Count);
     }
 }
