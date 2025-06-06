@@ -19,11 +19,11 @@ public class UserController : ControllerBase
     [HttpGet("user/{id:guid}")]
     public async Task<IResult> Get(Guid id) 
     {
-        var response = await _service.GetUser(id); 
+        var result = await _service.GetUser(id); 
         
-        if(!response.Success)
-            return Results.NotFound(response.Message);
+        if(!result.Success)
+            return Results.NotFound(result.Message);
 
-        return Results.Ok(response.Data);
+        return Results.Ok(result.Data);
     }
 }

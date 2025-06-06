@@ -17,22 +17,22 @@ public class AuthController : ControllerBase
     [HttpPost("signup")]
     public async Task<IResult> SignUp(RecordUser user)
     {
-        var response = await _service.SignUp(user);
+        var result = await _service.SignUp(user);
 
-        if(!response.Success) 
-            return Results.BadRequest(new { message = response.Message });
+        if(!result.Success) 
+            return Results.BadRequest(new { message = result.Message });
 
-        return Results.Ok(response);
+        return Results.Ok(result);
     } 
 
     [HttpPost("sign")]
     public async Task<IResult> Sign(SignUser model)
     {
-        var response = await _service.Sigin(model);
+        var result = await _service.Sigin(model);
 
-        if(!response.Success)
-            Results.BadRequest();
+        if(!result.Success)
+            return Results.BadRequest(new { message = result.Message });
 
-        return Results.Ok(response.Data);
+        return Results.Ok(result.Data);
     }
 }

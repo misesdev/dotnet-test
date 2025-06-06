@@ -19,44 +19,44 @@ public class MovieController : ControllerBase
     [HttpGet("movie/{id:guid}")]
     public async Task<IResult> Get(Guid id)
     {
-        var response = await _service.GetById(id);
+        var result = await _service.GetById(id);
 
-        if(!response.Success)
-            return Results.BadRequest(response.Message);
+        if(!result.Success)
+            return Results.BadRequest(result.Message);
 
-        return Results.Ok(response.Data);
+        return Results.Ok(result.Data);
     }
 
     [HttpPost("new")]
     public async Task<IResult> Add(RecordMovie model)
     {
-        var response = await _service.AddAsync(model);
+        var result = await _service.AddAsync(model);
 
-        if(!response.Success)
-            return Results.BadRequest(response.Message);
+        if(!result.Success)
+            return Results.BadRequest(result.Message);
 
-        return Results.Ok(response.Data);
+        return Results.Ok(result.Data);
     }
 
     [HttpPost("search")]
     public async Task<IResult> Search(MovieSearch model)
     {
-        var response = await _service.SearchByTitle(model);
+        var result = await _service.SearchByTitle(model);
 
-        if(!response.Success)
-            return Results.BadRequest(response.Message);
+        if(!result.Success)
+            return Results.BadRequest(result.Message);
 
-        return Results.Ok(response.Data);
+        return Results.Ok(result.Data);
     }
 
     [HttpPost("rent/{id:guid}")]
     public async Task<IResult> Rent(Guid id) 
     {
-        var response = await _service.RentMovie(id);
+        var result = await _service.RentMovie(id);
 
-        if(!response.Success)
+        if(!result.Success)
             return Results.Forbid();
 
-        return Results.Ok(response.Data);
+        return Results.Ok(result.Data);
     }
 }

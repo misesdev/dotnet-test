@@ -17,25 +17,22 @@ public class AuthService : BaseService<User>
 
     public async Task<Response<UserDTO>> SignUp(RecordUser model) 
     {
-        if(await base.Exists(u => u.Email == model.Email))
+        var exists = await base.Exists(u => u.Email == model.Email);
+
+        if(exists)
             return Response<UserDTO>.Fail("E-mail já existente! (Jamais seria exibido em cenário real)!");
 
-        if(_password.WeakPassword(model.Password))
-            return Response<UserDTO>.Fail("Senha muito fraca!");
-
         var entity = new User {
-            Id = Guid.NewGuid(),
             Name = model.Name,
             Email = model.Email,
             Salt = _password.GenerateSalt(),
-            CreatedAt = DateTime.Now,
         };
 
         entity.PasswordHash = _password.HashPassword(model.Password, entity.Salt);
 
         await base.AddAsync(entity);
 
-        return Response<UserDTO>.Ok("Usuario cadastrado com sucesso!", entity.ToDto());
+        return Response<UserDTO>.Ok("Usuário cadastrado com sucesso!", entity.ToDto());
     }
 
     public async Task<Response<UserAuth>> Sigin(SignUser model) 

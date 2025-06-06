@@ -42,9 +42,6 @@ public abstract class BaseService<Entity> where Entity : BaseModel
 
     public virtual async Task<Entity> AddAsync(Entity entity)
     {
-        entity.Id = Guid.NewGuid();
-        entity.CreatedAt = DateTime.Now;
-
         _dbSet.Add(entity);
 
         await _dbContext.SaveChangesAsync();

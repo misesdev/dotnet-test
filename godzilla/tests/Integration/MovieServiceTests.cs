@@ -2,7 +2,7 @@ using api.Models;
 using api.Service;
 using api.Data;
 using Microsoft.EntityFrameworkCore;
-using api.Tests.Integration.Faker;
+using api.Tests.Fakers;
 
 namespace api.Tests.Integration;
 

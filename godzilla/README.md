@@ -198,8 +198,31 @@ E então executar uma instância de desenvolvimento:
 
 ## Executar os testes
 
+Foram implementados diferentes tipos de testes automatizados e devem ser executados 
+independentemente por categoria:
+    
+- `Testes de Unidade` - Testa componentes independentes da aplicação. Devem ser executado
+filtrando pela Categoria `Unit`;
+
+- `Testes de Integração` - Testa as classes que interagem diretamente com o banco de dados,
+criando cenários com (select, update, delete). Devem ser executados filtrando pela 
+categoria `Integration`;
+
+- `Testes de Validação` - Testa a validação das models, efetivamente as validações feitas nos 
+parâmetros recebidos nas controllers. Devem ser executados filtrando pela categoria `Validation`.
+
+- `Testes de API` - Testa a API executando requests para cada endpoint em cenários desenhados, 
+e devido a essa naturesa, para executá-los corretamente primeiro exeute a aplicação, uma 
+vez acessível em `http://localhost:8080`, então os testes podem ser executados filtrando
+pela categoria `Controller`.
+
+
+Para executas os testes então basta navegar até a pasta do projeto de testes, e executar o comando 
+abaixo (Lembre-se de trocar `{Categoria}`, pela categoria de testes detalhadas acima):
+
 ```bash 
-    cd a5-solutions/godzilla/tests/ && dotnet test
+    cd a5-solutions/godzilla/tests/ &&
+    dotnet test --filter "TestCategory={Categoria}" --logger "console;verbosity=detailed"
 ```
 
 
