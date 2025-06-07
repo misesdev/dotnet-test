@@ -62,3 +62,12 @@ _ReSharper*/
 
 ## Ignorar certificados dev gerados pelo dotnet dev-certs
 dotnet-dev-certs.pfx
+
+*/TestResults/
+
+
+
+
+
+
+
