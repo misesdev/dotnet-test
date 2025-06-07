@@ -24,14 +24,14 @@ public class UserAuth {
 
 public class RecordUser {
     [Required(ErrorMessage = "`name` é um campo obrigatório`")]
-    [StringLength(50, MinimumLength = 3, ErrorMessage = "`Name` de entre 3 e 50 caracteres")]
+    [StringLength(50, MinimumLength = 3, ErrorMessage = "`name` de entre 3 e 50 caracteres")]
     public string Name { get; set; } = string.Empty;
     [Required(ErrorMessage = "`email` é um campo obrigatório")]
     [EmailAddress(ErrorMessage = "O e-mail fornecido está inválido")]
     [StringLength(50, MinimumLength = 5, ErrorMessage = "`email` deve ter entre 5 e 50 caracteres")]
     public string Email { get; set; } = string.Empty;
     [Required(ErrorMessage = "`password` é um campo obriogatório")]
-    [StringLength(50, MinimumLength = 6, ErrorMessage = "`password` deve conter entre 6 e 50 caracteres")]
+    [PasswordAttribute]
     public string Password { get; set; } = string.Empty;
 }
 
@@ -44,3 +44,14 @@ public class SignUser {
     [PasswordAttribute]
     public string Password { get; set; } = string.Empty;
 }
+
+public class UpdateUserDTO {
+    [Required(ErrorMessage = "`name` é um campo obrigatório`")]
+    [StringLength(50, MinimumLength = 3, ErrorMessage = "`name` de entre 3 e 50 caracteres")]
+    public string Name { get; set; } = string.Empty;
+    [Required(ErrorMessage = "`email` é um campo obrigatório")]
+    [EmailAddress(ErrorMessage = "O e-mail fornecido está inválido")]
+    [StringLength(50, MinimumLength = 5, ErrorMessage = "`email` deve ter entre 5 e 50 caracteres")]
+    public string Email { get; set; } = string.Empty;
+}
+

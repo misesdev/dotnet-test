@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using api.Service;
+using api.Models;
+using api.Extentios;
 
 namespace api.Controllers;
 
@@ -23,6 +26,21 @@ public class UserController : ControllerBase
         
         if(!result.Success)
             return Results.NotFound(result.Message);
+
+        return Results.Ok(result.Data);
+    }
+
+    [HttpPost("update")]
+    public async Task<IResult> Update(UpdateUserDTO user)
+    {
+        var model = user.ToUserDto();
+
+        model.Id = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+        var result = await _service.UpdateAsync(model);
+
+        if(!result.Success)
+            return Results.BadRequest(new { message = result.Message });
 
         return Results.Ok(result.Data);
     }

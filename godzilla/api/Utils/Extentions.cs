@@ -15,4 +15,12 @@ public static class Extention
             DeletedAt = user.DeletedAt
         };
     }
+
+    public static UserDTO ToUserDto(this UpdateUserDTO user)
+    {
+        return new UserDTO {
+            Name = user.Name,
+            Email = user.Email
+        };
+    }
 }

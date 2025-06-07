@@ -12,9 +12,9 @@ namespace api.Tests.Controller;
 public class MovieControllerTests 
 {
     private static Movie _movie = null!;
+    private static HttpClient _client = null!;
     private static RecordUser _recordUser = null!;
     private static UserAuth? _userAuth = null!;
-    private static HttpClient _client = null!;
     
     [ClassInitialize]
     public static async Task ClassInitialize(TestContext contex)
@@ -147,7 +147,7 @@ public class MovieControllerTests
     [TestMethod]
     public async Task Rent_ShouldReturnOK_WhenHaveTheMovieInStock()
     {
-        var response = await _client.PostAsJsonAsync($"/movies/rent/{_movie.Id}", new {});
+        var response = await _client.GetAsync($"/movies/rent/{_movie.Id}");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
     }

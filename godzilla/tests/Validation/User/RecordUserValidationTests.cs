@@ -9,20 +9,20 @@ namespace api.Tests.Validation.User;
 public class RecordUserValidationTests
 {
     [TestMethod]
-    [DataRow("Mises Dev", "mises@gmail.com", "4erdd3")]
-    [DataRow("M", "mises@gmail.com", "#$@@#weddSDe43233")]
-    [DataRow("Mises dev", "mises@@gmail.com", "#$@@#weddSDe43233")]
+    [DataRow("Mises Dev", "mises@gmail.com", "4erdd3")] // invalid password
+    [DataRow("M", "mises@gmail.com", "#$@@#weddSDe43233")] // invalid name
+    [DataRow("Mises dev", "mises@@gmail.com", "#$@@#weddSDe43233")] // invalid email
     public void RecordUser_InvalidFields_ShouldFailValidation(string name, string email, string password)
     {
         var user = new RecordUser {
-            Name = name, // muito curto
-            Email = email, // inválido
-            Password = password // muito curto
+            Name = name, 
+            Email = email, 
+            Password = password 
         };
 
         var results = ValidationHelper.Validate(user);
 
-        Assert.IsTrue(results.Count >= 0);
+        Assert.IsTrue(results.Count > 0);
     }
 
     [TestMethod]

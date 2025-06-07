@@ -30,6 +30,9 @@ public class UserService : BaseService<User>
         if(user == null)
             return Response<UserDTO>.Fail("Usuário inexistente!");
 
+        if(await Exists(u => u.Email == model.Email && u.Id != model.Id))
+            return Response<UserDTO>.Fail("E-mail já em uso por outro usuário");
+
         user.Name = model.Name;
         user.Email = model.Email;
         user.UpdatedAt = DateTime.Now;
@@ -38,5 +41,4 @@ public class UserService : BaseService<User>
         
         return Response<UserDTO>.Ok("Usuário atualizado com sucesso!", user.ToDto());
     }
-
 }

@@ -49,7 +49,7 @@ public class MovieController : ControllerBase
         return Results.Ok(result.Data);
     }
 
-    [HttpPost("rent/{id:guid}")]
+    [HttpGet("rent/{id:guid}")]
     public async Task<IResult> Rent(Guid id) 
     {
         var result = await _service.RentMovie(id);
