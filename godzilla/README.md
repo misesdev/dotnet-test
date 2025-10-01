@@ -96,13 +96,13 @@ Para atender o caso acima a authenticação foi implementada com Jwt(Json Web To
 Uma vez feito clone desse repositório:
 
 ```bash
-    git clone https://github.com/misesdev/a5-solutions.git
+    git clone https://github.com/misesdev/dotnet-test.git
 ```
 
 Navegue até a pasta do projeto:
 
 ```bash
-    cd a5-solutions/godzilla/api/
+    cd dotnet-test/godzilla/api/
 ```
 
 Primeiro instale os pacotes:
